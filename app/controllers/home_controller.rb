@@ -1,5 +1,12 @@
 class HomeController < ApplicationController
   skip_before_action :verify_authenticity_token
+
+  def index
+    @schedules = Schedule.all
+    # puts(@schedules.map{|s| s.start_date})
+  end
+
+
   def main
 
   end
@@ -49,22 +56,7 @@ class HomeController < ApplicationController
     }
   end
 
-  def index
-    @schedules = Schedule.all.order(start_time: :asc)
 
-    @tue = []
-
-    @schedules.each do |schedule|
-      @tutor = Tutor.find(schedule.tutor_id)
-      lessonInfo = @tutor.name + (schedule.type == 1 ? "20" : "40") + "분 수업"
-      @info = [schedule.active, lessonInfo]
-      @tue.append(@info)
-    end
-
-
-    @count = [@tue.length()].max
-
-  end
 
   def mock
     Tutor.new(

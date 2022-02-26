@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  root 'home#main'
+  root 'home#index'
+
   # get "home/data" => "home#data"
   get "home/data", to: "home#data", as: :data
   # get "home/db_action" => "home#db_action"

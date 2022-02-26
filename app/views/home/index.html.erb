@@ -87,60 +87,63 @@
   <p>Initialize empty state</p>
 </a>
 
+<% start_date = (params[:start_date] || Date.today).to_date %>
+<% date_range = (start_date.beginning_of_week..start_date.end_of_week).to_a %>
+<% hour_range = (start_date.beginning_of_day.to_i..start_date.end_of_day.to_i).step(30.minutes) %>
+
+<div class="center">
+  <p>수강권을 선택해주세요</p>
+  <button type="button"> <%= link_to "20분", "#"%></button>
+  <button type="button"> <%= link_to "40분", "#"%></button>
+</div>
+<hr>
 <table class="center">
   <thead>
   <tr>
-    <td colspan="7" class="center">2022, March</td>
+    <td colspan="8" class="center">
+      <%=link_to "Previous", start_date: date_range.first - 1.week%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <%= start_date.year %>, <%= I18n.t("date.month_names")[start_date.month] %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <%= link_to "Next", start_date: date_range.first + 1.week %>
+    </td>
   </tr>
   <tr>
-    <th>Sun</th>
-    <th>Mon</th>
-    <th>Tue</th>
-    <th>Wed</th>
-    <th>Thur</th>
-    <th>Fri</th>
-    <th>Sat</th>
+    <th>Hour</th>
+    <% date_range.slice(0, 7).each do |day| %>
+      <th><%= I18n.t("date.abbr_day_names")[day.wday] %> <%= day.strftime('%m/%d') %></th>
+    <% end %>
   </tr>
   </thead>
   <tbody>
-  <tr>
-    <td class="active">
-      <input type="checkbox" name="yoyoyoyo" value="yoyo">
-      SNU, Jin Choi, Ruby Basics
-    </td>
-    <td class="inactive">
-      <input type="checkbox" name="yoyoyoyo" value="yoyo">
-      SNU, Cool Kim, Marketing Basics
-    </td>
-    <% for idx in 0...@count %>
-      <% if idx < @tue.length() %>
-        <td class=<%= @tue[idx][0] == 1? 'active' : 'unactive' %> >
-          <input type="checkbox" name="lesson[]" value="">
-          <%= @tue[idx][1] %>
+  <% hour_range.each do |hour| %>
+    <tr>
+      <th><%= Time.at(hour).localtime.strftime('%H:%M') %></th>
+      <% date_range.each do |day| %>
+        <td>
+          <input type="checkbox" name="yoyoyoyo" value="yoyo">
+          <% @schedules.select{ |s| s.start_date.strftime('%H:%M') == Time.at(hour).localtime.strftime('%H:%M') && day == s.start_date.to_date }.each do |schedule| %>
+            <div><%= schedule.text %></div>
+          <% end %>
         </td>
-      <% else %>
-        <td></td>
       <% end %>
-    <% end %>
+    </tr>
 
-    <td>4</td>
-    <td>5</td>
-    <td>6</td>
-    <td>7</td>
+  <% end %>
   </tr>
-  <tr>
-    <td>1</td>
-    <td>2</td>
-    <td>3</td>
-    <td>4</td>
-    <td>5</td>
-    <td>6</td>
-    <td>7</td>
-  </tr>
+
+
+<!--    <td class="active">-->
+<!--      <input type="checkbox" name="yoyoyoyo" value="yoyo">-->
+<!--      SNU, Jin Choi, Ruby Basics-->
+<!--    </td>-->
+<!--    <td class="inactive">-->
+<!--      <input type="checkbox" name="yoyoyoyo" value="yoyo">-->
+<!--      SNU, Cool Kim, Marketing Basics-->
+<!--    </td>-->
+
   </tbody>
   <tfoot>
   <tr>
-    <td colspan="7" class="center">Enjoy Ringle!</td>
+    <td colspan="8" class="center">Enjoy Ringle!</td>
   </tr>
   </tfoot>
 </table>
