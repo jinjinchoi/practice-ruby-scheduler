@@ -112,7 +112,17 @@
       <input type="checkbox" name="yoyoyoyo" value="yoyo">
       SNU, Cool Kim, Marketing Basics
     </td>
-    <td>3</td>
+    <% for idx in 0...@count %>
+      <% if idx < @tue.length() %>
+        <td class=<%= @tue[idx][0] == 1? 'active' : 'unactive' %> >
+          <input type="checkbox" name="lesson[]" value="">
+          <%= @tue[idx][1] %>
+        </td>
+      <% else %>
+        <td></td>
+      <% end %>
+    <% end %>
+
     <td>4</td>
     <td>5</td>
     <td>6</td>
@@ -135,5 +145,4 @@
   </tfoot>
 </table>
 </body>
-
 </html>
