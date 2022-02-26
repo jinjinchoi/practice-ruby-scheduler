@@ -1,18 +1,139 @@
-<h1>Home#index</h1>
-<p>Find me in app/views/home/index.html.erb</p>
+<html>
+<head>
+<!--
+  Cusco Sky table styles
+  written by Braulio Soncco http://www.buayacorp.com
+-->
+  <style>
+      table{
+          width: 70%;
+          border: 1px solid #D4E0EE;
+          border-collapse: collapse;
+          font-family: "Trebuchet MS", Arial, sans-serif;
+          color: #555;
+      }
+      th, td {
+          width: 10%;
+          border: 1px solid #D4E0EE;
+          border-collapse: collapse;
+          font-family: "Trebuchet MS", Arial, sans-serif;
+          color: #555;
+      }
 
-<div id="scheduler_here" class="dhx_cal_container" style='width:100%; height:800px;'>
-  <div class="dhx_cal_navline">
-    <div class="dhx_cal_prev_button">&nbsp;</div>
-    <div class="dhx_cal_next_button">&nbsp;</div>
-    <div class="dhx_cal_today_button"></div>
-    <div class="dhx_cal_date"></div>
-    <div class="dhx_cal_tab" name="day_tab" style="right:204px;"></div>
-    <div class="dhx_cal_tab" name="week_tab" style="right:140px;"></div>
-    <div class="dhx_cal_tab" name="month_tab" style="right:76px;"></div></div>
-  <div class="dhx_cal_header"></div>
-  <div class="dhx_cal_data”"></div>
-</div>
-<script>
-    scheduler.init("scheduler_here");
-</script>
+      caption {
+          font-size: 150%;
+          font-weight: bold;
+          margin: 5px;
+      }
+
+      td, th {
+          padding: 4px;
+      }
+
+      thead th {
+          text-align: center;
+          background: #E6EDF5;
+          color: #4F76A3;
+          font-size: 100% !important;
+      }
+
+      tbody th {
+          font-weight: bold;
+      }
+
+      tbody tr { background: #FCFDFE; }
+
+      tbody tr.odd { background: #F7F9FC; }
+
+      table a:link {
+          color: #718ABE;
+          text-decoration: none;
+      }
+
+      table a:visited {
+          color: #718ABE;
+          text-decoration: none;
+      }
+
+      table a:hover {
+          color: #718ABE;
+          text-decoration: underline !important;
+      }
+
+      tfoot th, tfoot td {
+          font-size: 85%;
+      }
+      .center {
+          align-content: center;
+          text-align: center;
+          margin-left: auto;
+          margin-right: auto;
+      }
+      .active{
+          background-color: palegreen;
+      }
+      .inactive{
+          background-color: lightgray;
+      }
+  </style>
+
+</head>
+
+<body>
+<a href="/mockInitialize">
+  <p>Initialize Mock Data</p>
+</a>
+<a href="/initialize">
+  <p>Initialize empty state</p>
+</a>
+
+<table class="center">
+  <thead>
+  <tr>
+    <td colspan="7" class="center">2022, March</td>
+  </tr>
+  <tr>
+    <th>Sun</th>
+    <th>Mon</th>
+    <th>Tue</th>
+    <th>Wed</th>
+    <th>Thur</th>
+    <th>Fri</th>
+    <th>Sat</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td class="active">
+      <input type="checkbox" name="yoyoyoyo" value="yoyo">
+      SNU, Jin Choi, Ruby Basics
+    </td>
+    <td class="inactive">
+      <input type="checkbox" name="yoyoyoyo" value="yoyo">
+      SNU, Cool Kim, Marketing Basics
+    </td>
+    <td>3</td>
+    <td>4</td>
+    <td>5</td>
+    <td>6</td>
+    <td>7</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>2</td>
+    <td>3</td>
+    <td>4</td>
+    <td>5</td>
+    <td>6</td>
+    <td>7</td>
+  </tr>
+  </tbody>
+  <tfoot>
+  <tr>
+    <td colspan="7" class="center">Enjoy Ringle!</td>
+  </tr>
+  </tfoot>
+</table>
+</body>
+
+</html>
