@@ -47,6 +47,9 @@ class HomeController < ApplicationController
 
   def update
     @tutors = Tutor.all
+    if @tutors.blank?
+      @tutors = nil
+    end
     tutor_id = params[:tutor_id]
     schedule_id = params[:schedule_id]
     @edit_mode = params[:edit_mode]

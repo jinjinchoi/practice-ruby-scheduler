@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   get 'initialize' => "home#init"
   get 'update' => "home#update"
 
+  get '/tutor/new' => "tutor#new"
+  post '/tutor/create' => "tutor#create"
+
   patch '/schedule' => "home#updateSchedule"
   get '/delete/:schedule_id' => "home#deleteSchedule"
 end

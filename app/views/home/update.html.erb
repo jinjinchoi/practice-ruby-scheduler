@@ -114,9 +114,11 @@
         <%= submit_tag "조회하기", :name => nil %>
       <% end %>
     <% end %>
-  <% else %>
+  <% elsif @tutors%>
     <%= form.select :tutor_id,  @tutors.map{|t| [t.name, t.id]}, selected: @tutor ? @tutor.name : @tutors[0].name %>
     <%= submit_tag "선택", :name => nil %>
+  <% else %>
+      <p>등록된 튜터가 없습니다.</p>
   <% end %>
 <% end %>
 
