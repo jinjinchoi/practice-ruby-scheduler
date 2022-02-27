@@ -92,16 +92,12 @@
 </div>
 <br>
 <hr>
-<form action="/check" method="post">
   <div class="center">
     <p>수강권을 선택해주세요</p>
     <button type="button"> <%= link_to "20분", "/index/20/?start_date=#{start_date}"%></button>
     <button type="button"> <%= link_to "40분", "/index/40/?start_date=#{start_date}"%></button>
   </div>
   <br>
-  <div class="center">
-    <button type="submit">가능한 수업 확인하기</button>
-  </div>
 
   <hr>
 <table class="center">
@@ -121,17 +117,17 @@
   </tr>
   </thead>
   <tbody>
-  <% hour_range.each do |hour| %>
+
+  <% hour_range.each_with_index do |hour, idx_hour| %>
     <tr>
       <th><%= Time.at(hour).localtime.strftime('%H:%M') %></th>
-      <% date_range.each do |day| %>
-        <td>
+      <% date_range.each_with_index do |day, idx_day| %>
+        <td class= <%= @active[idx_hour][idx_day]==true ? 'active' : 'inactive'  %>>
           <% @matched = @schedules.select{ |s| s.start_date.strftime('%H:%M') == Time.at(hour).localtime.strftime('%H:%M') && day == s.start_date.to_date }%>
           <% if @matched %>
-            <input type="checkbox">
             <%@matched.each do |schedule| %>
-            <input type="hidden" name="date" value="<%= schedule.start_date%>">
-            <div><%= schedule.tutor_id %></div>
+              <input type="hidden" name="date" value="<%= schedule.start_date%>">
+              <div><%= schedule.tutor_id %><%= schedule.active==1 ? '(o)' : '(x)' %></div>
             <% end %>
           <% else %>
             <div>x</div>
@@ -139,18 +135,14 @@
         </td>
       <% end %>
     </tr>
-
   <% end %>
   </tr>
   </tbody>
   <tfoot>
   <tr>
-    <td colspan="8" class="center">Enjoy Ringle!</td>
+    <td colspan="8" class="center">Enjoy your class!</td>
   </tr>
   </tfoot>
 </table>
-
-</form>
-
 </body>
 </html>

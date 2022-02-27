@@ -2,54 +2,42 @@ class HomeController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
+    @schedules = Schedule.all
     @lecture_type = params[:lecture_type]
-    @start_date = params[:start_date]
-    # puts(@start_date)
 
-    case @lecture_type
-    when "20" then
-      @schedules = Schedule.all
-    when "40" then
-      @schedules = Schedule.all
-      @temp = []
-      @schedules.each do |schedule|
-        @tutor = Tutor.find(schedule.tutor_id)
-        puts(@tutor.name)
-        next_time_block = schedule.start_date + 30.minutes
-        @next = Schedule.find_by(tutor_id: schedule.tutor_id, start_date: next_time_block)
-        # puts(schedule.start_date)
-        # puts(next_time_block.utc)
-        # puts(schedule.start_date.to_date)
-        # puts(schedule.start_date.to_date + 30.minutes)
-        puts(@next ? "exists" : "")
-        @next ? @temp.append(schedule) : ""
-        # wday = schedule.start_date.strftime('%A')
-        # puts(wday)
-      end
-      @schedules = @temp
+    start_date = params[:start_date]
+    if start_date.blank?
+      @start_date = DateTime.now
     else
-      @schedules = Schedule.all
+      @start_date = DateTime.parse(start_date)
     end
-    # puts(@schedules.map{|s| s.start_date})
 
+    date_range = (@start_date.beginning_of_week..@start_date.end_of_week).to_a
+    hour_range = (@start_date.localtime.beginning_of_day.to_i..@start_date.localtime.end_of_day.to_i).step(30.minutes)
 
-  end
-
-  def check
-    puts("가능한 수업 선생님들은..")
-    # input : start_date, lesson_type(20/40)
-    # output : 해당 start_date에 {lesson_type}수업이 가능한 선생님들의 목록
-    puts(params[:date])
-    puts(Schedule.find_by_start_date(params[:date]).tutor_id)
-    redirect_to '/available'
-  end
-
-  def available
-
-  end
-
-  def main
-
+    @active = Array.new(hour_range.size) { Array.new(date_range.size) { false } }
+    hour_range.each_with_index do |hour, idx_hour|
+      date_range.each_with_index do |day, idx_day|
+        _hour = Time.at(hour).localtime
+        _day = Time.at(day).localtime
+        datetime = DateTime.new(_day.year, _day.month, _day.day, _hour.hour, _hour.min, _hour.sec, '+9')
+        schedule = Schedule.find_by(active: 1, start_date: datetime)
+        if schedule
+          case @lecture_type
+          when "20" then
+            @active[idx_hour][idx_day] = true
+          when "40" then
+            @tutor = Tutor.find(schedule.tutor_id)
+            next_time_block = schedule.start_date + 30.minutes
+            if Schedule.find_by(tutor_id: schedule.tutor_id, start_date: next_time_block)
+            # puts(datetime)
+              @active[idx_hour][idx_day] = true
+            end
+          else
+          end
+        end
+      end
+    end
   end
 
   def mock
@@ -257,25 +245,25 @@ class HomeController < ApplicationController
     Schedule.new(
       start_date: '2022-2-24 00:00:00',
       tutor_id: 1,
-      active: 2
+      active: 1
     ).save
 
     Schedule.new(
       start_date: '2022-2-24 00:30:00',
       tutor_id: 1,
-      active: 2
+      active: 1
     ).save
 
     Schedule.new(
       start_date: '2022-2-24 01:00:00',
       tutor_id: 1,
-      active: 2
+      active: 1
     ).save
 
     Schedule.new(
       start_date: '2022-2-25 01:30:00',
       tutor_id: 1,
-      active: 2
+      active: 1
     ).save
 
     Schedule.new(
