@@ -73,13 +73,14 @@
           background-color: palegreen;
       }
       .inactive{
-          background-color: lightgray;
+          background-color: lightgrey;
       }
   </style>
 
 </head>
 
 <body>
+
 <% start_date = (params[:start_date] || Date.today).to_date %>
 <% date_range = (start_date.beginning_of_week..start_date.end_of_week).to_a %>
 <% hour_range = (start_date.beginning_of_day.to_i..start_date.end_of_day.to_i).step(30.minutes) %>

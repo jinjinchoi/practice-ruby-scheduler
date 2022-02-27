@@ -21,19 +21,20 @@ class HomeController < ApplicationController
         _hour = Time.at(hour).localtime
         _day = Time.at(day).localtime
         datetime = DateTime.new(_day.year, _day.month, _day.day, _hour.hour, _hour.min, _hour.sec, '+9')
-        schedule = Schedule.find_by(active: 1, start_date: datetime)
-        if schedule
-          case @lecture_type
-          when "20" then
-            @active[idx_hour][idx_day] = true
-          when "40" then
-            @tutor = Tutor.find(schedule.tutor_id)
-            next_time_block = schedule.start_date + 30.minutes
-            if Schedule.find_by(tutor_id: schedule.tutor_id, start_date: next_time_block)
-            # puts(datetime)
+        schedule_list = Schedule.where(active: 1, start_date: datetime)
+        unless schedule_list.empty?
+          schedule_list.each do |schedule|
+            case @lecture_type
+            when "20" then
               @active[idx_hour][idx_day] = true
+            when "40" then
+              @tutor = Tutor.find(schedule.tutor_id)
+              next_time_block = schedule.start_date + 30.minutes
+              if Schedule.find_by(tutor_id: schedule.tutor_id, start_date: next_time_block)
+                @active[idx_hour][idx_day] = true
+              end
+            else
             end
-          else
           end
         end
       end
