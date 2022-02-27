@@ -16,6 +16,10 @@ class HomeController < ApplicationController
     hour_range = (@start_date.localtime.beginning_of_day.to_i..@start_date.localtime.end_of_day.to_i).step(30.minutes)
 
     @active = Array.new(hour_range.size) { Array.new(date_range.size) { false } }
+    if @lecture_type == "mock" || @lecture_type == "init"
+      return
+    end
+
     hour_range.each_with_index do |hour, idx_hour|
       date_range.each_with_index do |day, idx_day|
         _hour = Time.at(hour).localtime
@@ -368,12 +372,12 @@ class HomeController < ApplicationController
       tutor_id: 8,
       active: 1
     ).save
-    redirect_to '/home/index'
+    redirect_to '/index/mock'
   end
 
   def init
     Tutor.delete_all
     Schedule.delete_all
-    redirect_to '/home/index'
+    redirect_to '/index/init'
   end
 end
