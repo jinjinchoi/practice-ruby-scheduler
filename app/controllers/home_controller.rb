@@ -45,6 +45,30 @@ class HomeController < ApplicationController
     end
   end
 
+  def update
+    @tutors = Tutor.all
+    tutor_id = params[:tutor_id]
+    schedule_id = params[:schedule_id]
+    @edit_mode = params[:edit_mode]
+    # puts(tutor_id)
+    @tutor = Tutor.find_by(id: tutor_id)
+    @schedules = Schedule.where(tutor_id: tutor_id).order(start_date: :asc)
+    @schedule = Schedule.find_by(id: schedule_id)
+  end
+
+  def updateSchedule
+    _active = params[:schedule][:active]
+    _schedule = Schedule.find(params[:s_id])
+    _schedule.active = _active
+    _schedule.save
+    redirect_to "/update/?tutor_id=#{params[:t_id]}"
+  end
+
+  def deleteSchedule
+    Schedule.destroy(params[:schedule_id])
+    redirect_to '/update'
+  end
+
   def mock
     Tutor.delete_all
     Schedule.delete_all

@@ -92,15 +92,33 @@
   <button type="button"> <%= link_to "초기화하기", "/initialize"%></button>
 </div>
 <br>
-<hr>
-  <div class="center">
-    <p>수강권을 선택해주세요</p>
-    <button type="button"> <%= link_to "20분", "/index/20/?start_date=#{start_date}"%></button>
-    <button type="button"> <%= link_to "40분", "/index/40/?start_date=#{start_date}"%></button>
-  </div>
+
+  <table class="center">
+    <tr>
+      <th>Dear Students</th>
+      <th>Dear Tutors</th>
+    </tr>
+    <tr>
+      <td>
+        <% if @lecture_type=='20' %>
+          <p>현재 선택하신 수강권은 <b>20분 수강권</b>입니다.</p>
+        <% elsif @lecture_type=='40' %>
+          <p>현재 선택하신 수강권은 <b>40분 수강권</b>입니다.</p>
+        <% else%>
+          <p>수강권을 선택해주세요</p>
+        <% end %>
+
+        <button type="button"> <%= link_to "20분", "/index/20/?start_date=#{start_date}"%></button>
+        <button type="button"> <%= link_to "40분", "/index/40/?start_date=#{start_date}"%></button>
+      </td>
+      <td>
+        <p>수업 가능 시간을 업데이트해주세요</p>
+        <button type="button"><%=link_to "Update", "/update"%></button>
+      </td>
+    </tr>
+  </table>
   <br>
 
-  <hr>
 <table class="center">
   <thead>
   <tr>

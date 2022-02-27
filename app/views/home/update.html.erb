@@ -1,0 +1,163 @@
+<html>
+<head>
+  <!--
+    Cusco Sky table styles
+    written by Braulio Soncco http://www.buayacorp.com
+  -->
+  <style>
+      table{
+          width: 70%;
+          border: 1px solid #D4E0EE;
+          border-collapse: collapse;
+          font-family: "Trebuchet MS", Arial, sans-serif;
+          color: #555;
+      }
+      th, td {
+          width: 10%;
+          border: 1px solid #D4E0EE;
+          border-collapse: collapse;
+          font-family: "Trebuchet MS", Arial, sans-serif;
+          color: #555;
+      }
+
+      caption {
+          font-size: 150%;
+          font-weight: bold;
+          margin: 5px;
+      }
+
+      td, th {
+          padding: 4px;
+      }
+
+      thead th {
+          text-align: center;
+          background: #E6EDF5;
+          color: #4F76A3;
+          font-size: 100% !important;
+      }
+
+      tbody th {
+          font-weight: bold;
+      }
+
+      tbody tr { background: #FCFDFE; }
+
+      tbody tr.odd { background: #F7F9FC; }
+
+      table a:link.edit{
+          font-weight: bold;
+          color: orangered; !important;
+      }
+
+      table a:link {
+          color: #718ABE;
+          text-decoration: none;
+      }
+
+      table a:visited {
+          color: #718ABE;
+          text-decoration: none;
+      }
+
+      table a:hover {
+          color: #718ABE;
+          text-decoration: underline !important;
+      }
+
+      tfoot th, tfoot td {
+          font-size: 85%;
+      }
+      .center {
+          align-content: center;
+          text-align: center;
+          margin-left: auto;
+          margin-right: auto;
+      }
+      .active{
+          background-color: palegreen;
+      }
+      .inactive{
+          background-color: lightgrey;
+      }
+      a:link.edit{
+          font-weight: bold;
+          color: red;
+      }
+  </style>
+
+</head>
+<body class="center">
+
+<%# start_date = (params[:start_date] || Date.today).to_date %>
+<%# date_range = (start_date.beginning_of_week..start_date.end_of_week).to_a %>
+<%# hour_range = (start_date.beginning_of_day.to_i..start_date.end_of_day.to_i).step(30.minutes) %>
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+<button type="button"> <%= link_to "홈으로 이동", "/"%></button>
+<br><br>
+<h3>튜터 선택하기</h3>
+
+<%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
+  <% if @tutor %>
+    <%= form.select :tutor_id,  @tutors.map{|t| [t.name, t.id]}, selected: @tutor.id %>
+    <%= submit_tag "선택", :name => nil %>
+    <% if @schedule %>
+      <%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
+        <%= form.select :schedule_id,  @schedules.map{|s| [s.start_date.strftime('%Y-%m-%d %H시 %M분'), s.id]}, selected: @schedule.id %>
+        <%= submit_tag "조회하기", :name => nil %>
+      <% end %>
+    <% else %>
+      <%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
+        <%= form.select :schedule_id,  @schedules.map{|s| [s.start_date.strftime('%Y-%m-%d %H시 %M분'), s.id]} %>
+        <%= submit_tag "조회하기", :name => nil %>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= form.select :tutor_id,  @tutors.map{|t| [t.name, t.id]}, selected: @tutor ? @tutor.name : @tutors[0].name %>
+    <%= submit_tag "선택", :name => nil %>
+  <% end %>
+<% end %>
+
+<br>
+<table class="center">
+<% if @tutor %>
+  <tr>
+    <th>튜터명</th>
+    <td><%= @tutor.name %></td>
+  </tr>
+      <% if @schedule %>
+
+        <% if @edit_mode %>
+            <tr>
+              <th>일자</th>
+              <td><%= @schedule.start_date.strftime('%Y-%m-%d %H시 %M분') %></td>
+            </tr>
+            <tr>
+              <th>가능 여부</th>
+              <td>
+                  <%= form_with model: @schedule do |form| %>
+                    <input name="t_id" type="hidden" value=<%= @tutor.id %>/>
+                    <input name="s_id" type="hidden" value=<%= @schedule.id %>/>
+                    <%= form.select :active, [["O", 1], ["X", 2]], selected: @schedule.active %><%= submit_tag "저장하기" %>
+                  <% end %>
+              </td>
+            </tr>
+        <% else %>
+          <tr>
+            <th>일자</th>
+            <td><%= @schedule.start_date.strftime('%Y-%m-%d %H시 %M분') %></td>
+          </tr>
+          <tr>
+            <th>가능 여부</th>
+            <td><%= @schedule.active == 1 ? 'O ' : 'X ' %><button type="button"><%= link_to "수정하기", "/update?tutor_id=#{@tutor.id}&schedule_id=#{@schedule.id}&edit_mode=true",  class:"edit"%></button></td>
+          </tr>
+        <% end %>
+      <% end %>
+  <% end %>
+</table>
+<br>
+<% if @edit_mode && @schedule %><button type="button"><%= link_to "삭제하기", "/delete/#{@schedule.id}", class: "edit"%></button> <% end %>
+</body>
+</html>
