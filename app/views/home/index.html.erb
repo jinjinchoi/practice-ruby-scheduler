@@ -80,23 +80,30 @@
 </head>
 
 <body>
-<a href="/mockInitialize">
-  <p>Initialize Mock Data</p>
-</a>
-<a href="/initialize">
-  <p>Initialize empty state</p>
-</a>
-
 <% start_date = (params[:start_date] || Date.today).to_date %>
 <% date_range = (start_date.beginning_of_week..start_date.end_of_week).to_a %>
 <% hour_range = (start_date.beginning_of_day.to_i..start_date.end_of_day.to_i).step(30.minutes) %>
 
+<br>
+<br>
 <div class="center">
-  <p>수강권을 선택해주세요</p>
-  <button type="button"> <%= link_to "20분", "#"%></button>
-  <button type="button"> <%= link_to "40분", "#"%></button>
+  <button type="button"> <%= link_to "Mock Data로 초기화하기", "/mockInitialize"%></button>
+  <button type="button"> <%= link_to "초기화하기", "/initialize"%></button>
 </div>
+<br>
 <hr>
+<form action="/check" method="post">
+  <div class="center">
+    <p>수강권을 선택해주세요</p>
+    <button type="button"> <%= link_to "20분", "/index/20/?start_date=#{start_date}"%></button>
+    <button type="button"> <%= link_to "40분", "/index/40/?start_date=#{start_date}"%></button>
+  </div>
+  <br>
+  <div class="center">
+    <button type="submit">가능한 수업 확인하기</button>
+  </div>
+
+  <hr>
 <table class="center">
   <thead>
   <tr>
@@ -119,9 +126,15 @@
       <th><%= Time.at(hour).localtime.strftime('%H:%M') %></th>
       <% date_range.each do |day| %>
         <td>
-          <input type="checkbox" name="yoyoyoyo" value="yoyo">
-          <% @schedules.select{ |s| s.start_date.strftime('%H:%M') == Time.at(hour).localtime.strftime('%H:%M') && day == s.start_date.to_date }.each do |schedule| %>
-            <div><%= schedule.text %></div>
+          <% @matched = @schedules.select{ |s| s.start_date.strftime('%H:%M') == Time.at(hour).localtime.strftime('%H:%M') && day == s.start_date.to_date }%>
+          <% if @matched %>
+            <input type="checkbox">
+            <%@matched.each do |schedule| %>
+            <input type="hidden" name="date" value="<%= schedule.start_date%>">
+            <div><%= schedule.tutor_id %></div>
+            <% end %>
+          <% else %>
+            <div>x</div>
           <% end %>
         </td>
       <% end %>
@@ -129,17 +142,6 @@
 
   <% end %>
   </tr>
-
-
-<!--    <td class="active">-->
-<!--      <input type="checkbox" name="yoyoyoyo" value="yoyo">-->
-<!--      SNU, Jin Choi, Ruby Basics-->
-<!--    </td>-->
-<!--    <td class="inactive">-->
-<!--      <input type="checkbox" name="yoyoyoyo" value="yoyo">-->
-<!--      SNU, Cool Kim, Marketing Basics-->
-<!--    </td>-->
-
   </tbody>
   <tfoot>
   <tr>
@@ -147,5 +149,8 @@
   </tr>
   </tfoot>
 </table>
+
+</form>
+
 </body>
 </html>
