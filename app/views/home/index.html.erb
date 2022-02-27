@@ -126,8 +126,7 @@
           <% @matched = @schedules.select{ |s| s.start_date.strftime('%H:%M') == Time.at(hour).localtime.strftime('%H:%M') && day == s.start_date.to_date }%>
           <% if @matched %>
             <%@matched.each do |schedule| %>
-              <input type="hidden" name="date" value="<%= schedule.start_date%>">
-              <div><%= schedule.tutor_id %><%= schedule.active==1 ? '(o)' : '(x)' %></div>
+                <div><%= schedule.tutor_id %><%= schedule.active==1 ? '(o)' : '(x)' %></div>
             <% end %>
           <% else %>
             <div>x</div>

@@ -271,6 +271,102 @@ class HomeController < ApplicationController
       tutor_id: 1,
       active: 2
     ).save
+
+    Schedule.new(
+      start_date: '2022-3-7 03:00:00',
+      tutor_id: 4,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-07 00:00:00',
+      tutor_id: 5,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-07 00:30:00',
+      tutor_id: 5,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-08 02:30:00',
+      tutor_id: 6,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-08 03:00:00',
+      tutor_id: 6,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-10 02:30:00',
+      tutor_id: 8,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-10 03:00:00',
+      tutor_id: 8,
+      active: 2
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-10 03:30:00',
+      tutor_id: 8,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-10 04:00:00',
+      tutor_id: 8,
+      active: 2
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-10 04:30:00',
+      tutor_id: 8,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-10 05:00:00',
+      tutor_id: 8,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-10 03:30:00',
+      tutor_id: 7,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-10 04:00:00',
+      tutor_id: 7,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-10 04:30:00',
+      tutor_id: 7,
+      active: 2
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-12 03:30:00',
+      tutor_id: 8,
+      active: 1
+    ).save
+
+    Schedule.new(
+      start_date: '2022-3-12 04:00:00',
+      tutor_id: 8,
+      active: 1
+    ).save
     redirect_to '/home/index'
   end
 
