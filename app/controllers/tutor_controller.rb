@@ -5,6 +5,6 @@ class TutorController < ApplicationController
     new_tutor = Tutor.new
     new_tutor.name = params[:name]
     new_tutor.save
-    redirect_to '/'
+    redirect_to '/schedule/new'
   end
 end

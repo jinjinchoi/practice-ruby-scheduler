@@ -4,6 +4,7 @@ class ScheduleController < ApplicationController
     if @tutors.blank?
       @tutors = nil
     end
+    @error = params[:error]=='true'
   end
 
   def addSchedule
@@ -18,7 +19,9 @@ class ScheduleController < ApplicationController
       redirect_to "/schedule/update/?tutor_id=#{params[:tutor_id]}&schedule_id=#{new_schedule.id}"
     else
       new_schedule.errors.full_messages.each do |message|
-        puts(message)
+        if message == 'Start date has already been taken'
+          redirect_to "/schedule/new?error=true"
+        end
       end
     end
   end
