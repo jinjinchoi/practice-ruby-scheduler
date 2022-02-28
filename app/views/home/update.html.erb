@@ -102,21 +102,23 @@
 <%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
   <% if @tutor %>
     <%= form.select :tutor_id,  @tutors.map{|t| [t.name, t.id]}, selected: @tutor.id %>
-    <%= submit_tag "선택", :name => nil %>
-    <% if @schedule %>
+    <%= submit_tag "튜터 선택", :name => nil %>
+    <% if @schedules && @schedule %>
       <%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
         <%= form.select :schedule_id,  @schedules.map{|s| [s.start_date.strftime('%Y-%m-%d %H시 %M분'), s.id]}, selected: @schedule.id %>
-        <%= submit_tag "조회하기", :name => nil %>
+        <%= submit_tag "일정 조회하기", :name => nil %>
+      <% end %>
+    <% elsif @schedules && @schedule_id.blank?%>
+      <%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
+        <%= form.select :schedule_id,  @schedules.map{|s| [s.start_date.strftime('%Y-%m-%d %H시 %M분'),  s.id]} %>
+        <%= submit_tag "일정 조회하기", :name => nil %>
       <% end %>
     <% else %>
-      <%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
-        <%= form.select :schedule_id,  @schedules.map{|s| [s.start_date.strftime('%Y-%m-%d %H시 %M분'), s.id]} %>
-        <%= submit_tag "조회하기", :name => nil %>
-      <% end %>
+      <p>등록된 일정이 없습니다.</p>
     <% end %>
   <% elsif @tutors%>
     <%= form.select :tutor_id,  @tutors.map{|t| [t.name, t.id]}, selected: @tutor ? @tutor.name : @tutors[0].name %>
-    <%= submit_tag "선택", :name => nil %>
+    <%= submit_tag "튜터 선택", :name => nil %>
   <% else %>
       <p>등록된 튜터가 없습니다.</p>
   <% end %>
@@ -129,7 +131,7 @@
     <th>튜터명</th>
     <td><%= @tutor.name %></td>
   </tr>
-      <% if @schedule %>
+      <% if @schedule && @schedule %>
 
         <% if @edit_mode %>
             <tr>

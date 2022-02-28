@@ -51,12 +51,14 @@ class HomeController < ApplicationController
       @tutors = nil
     end
     tutor_id = params[:tutor_id]
-    schedule_id = params[:schedule_id]
+    @s_id= params[:schedule_id]
     @edit_mode = params[:edit_mode]
-    # puts(tutor_id)
     @tutor = Tutor.find_by(id: tutor_id)
     @schedules = Schedule.where(tutor_id: tutor_id).order(start_date: :asc)
-    @schedule = Schedule.find_by(id: schedule_id)
+    if @schedules.blank?
+      @schedules = nil
+    end
+    @schedule = Schedule.find_by(id: @s_id, tutor_id: tutor_id)
   end
 
   def updateSchedule
@@ -64,7 +66,7 @@ class HomeController < ApplicationController
     _schedule = Schedule.find(params[:s_id])
     _schedule.active = _active
     _schedule.save
-    redirect_to "/update/?tutor_id=#{params[:t_id]}"
+    redirect_to "/update/?tutor_id=#{params[:t_id]}&schedule_id=#{params[:s_id]}"
   end
 
   def deleteSchedule
