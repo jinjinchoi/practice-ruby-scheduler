@@ -12,11 +12,10 @@
 <body class="center">
 <br><br><br><br><br><br><br><br><br><br><br><br><br>
 <button type="button"> <%= link_to "홈으로 이동", "/"%></button>
-<%= form_tag "/tutor/create", method: :post do %>
-  <p>이름을 입력해주세요.</p>
-  <input required="true" type="text" name="Name">
-  <br>
-  <br>
-  <button type="submit">제출</button>
+<%= form_with url: "/schedule", method: :post do |form|%>
+  <%= form.select :tutor_id, @tutors.map{|t| [t.name, t.id]} %>
+  <%= form.date_select :start_date %>
+  <%= form.time_select :start_time, minute_step: 30 %>
+  <%= submit_tag "일정 등록하기", :name => nil %>
 <% end %>
 </body>

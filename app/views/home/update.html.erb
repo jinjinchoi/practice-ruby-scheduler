@@ -102,7 +102,7 @@
         <%= form.select :schedule_id,  @schedules.map{|s| [s.start_date.strftime('%Y-%m-%d %H시 %M분'), s.id]}, selected: @schedule.id %>
         <%= submit_tag "일정 조회하기", :name => nil %>
       <% end %>
-    <% elsif @schedules && @schedule_id.blank?%>
+    <% elsif @schedules && @s_id.blank?%>
       <%= form_with url: "/schedule/update", method: :get, enforce_utf8: false do |form| %>
         <%= form.select :schedule_id,  @schedules.map{|s| [s.start_date.strftime('%Y-%m-%d %H시 %M분'),  s.id]} %>
         <%= submit_tag "일정 조회하기", :name => nil %>
