@@ -12,6 +12,7 @@
 <body class="center">
 <br><br><br><br><br><br><br><br><br><br><br><br><br>
 <button type="button"> <%= link_to "홈으로 이동", "/"%></button>
+<h3>일정 등록하기</h3>
 <%= form_with url: "/schedule", method: :post do |form|%>
   <%= form.select :tutor_id, @tutors.map{|t| [t.name, t.id]} %>
   <%= form.date_select :start_date %>
