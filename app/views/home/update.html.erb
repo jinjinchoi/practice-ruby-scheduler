@@ -88,28 +88,22 @@
 
 </head>
 <body class="center">
-
-<%# start_date = (params[:start_date] || Date.today).to_date %>
-<%# date_range = (start_date.beginning_of_week..start_date.end_of_week).to_a %>
-<%# hour_range = (start_date.beginning_of_day.to_i..start_date.end_of_day.to_i).step(30.minutes) %>
-
-
 <br><br><br><br><br><br><br><br><br><br><br><br><br>
 <button type="button"> <%= link_to "홈으로 이동", "/"%></button>
 <br><br>
-<h3>튜터 선택하기</h3>
+<h3>튜터 스케줄 페이지</h3>
 
-<%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
+<%= form_with url: "/schedule/update", method: :get, enforce_utf8: false do |form| %>
   <% if @tutor %>
     <%= form.select :tutor_id,  @tutors.map{|t| [t.name, t.id]}, selected: @tutor.id %>
     <%= submit_tag "튜터 선택", :name => nil %>
     <% if @schedules && @schedule %>
-      <%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
+      <%= form_with url: "/schedule/update", method: :get, enforce_utf8: false do |form| %>
         <%= form.select :schedule_id,  @schedules.map{|s| [s.start_date.strftime('%Y-%m-%d %H시 %M분'), s.id]}, selected: @schedule.id %>
         <%= submit_tag "일정 조회하기", :name => nil %>
       <% end %>
     <% elsif @schedules && @schedule_id.blank?%>
-      <%= form_with url: "/update", method: :get, enforce_utf8: false do |form| %>
+      <%= form_with url: "/schedule/update", method: :get, enforce_utf8: false do |form| %>
         <%= form.select :schedule_id,  @schedules.map{|s| [s.start_date.strftime('%Y-%m-%d %H시 %M분'),  s.id]} %>
         <%= submit_tag "일정 조회하기", :name => nil %>
       <% end %>
@@ -155,13 +149,13 @@
           </tr>
           <tr>
             <th>가능 여부</th>
-            <td><%= @schedule.active == 1 ? 'O ' : 'X ' %><button type="button"><%= link_to "수정하기", "/update?tutor_id=#{@tutor.id}&schedule_id=#{@schedule.id}&edit_mode=true",  class:"edit"%></button></td>
+            <td><%= @schedule.active == 1 ? 'O ' : 'X ' %><button type="button"><%= link_to "수정하기", "/schedule/update?tutor_id=#{@tutor.id}&schedule_id=#{@schedule.id}&edit_mode=true",  class:"edit"%></button></td>
           </tr>
         <% end %>
       <% end %>
   <% end %>
 </table>
 <br>
-<% if @edit_mode && @schedule %><button type="button"><%= link_to "삭제하기", "/delete/#{@schedule.id}", class: "edit"%></button> <% end %>
+<% if !@edit_mode && @schedule %><%= button_to "삭제하기", schedule_delete_path(@schedule), method: :delete, form: {data: {turbo_confirm: '정말로 삭제하시겠어요?'}} %><% end %>
 </body>
 </html>

@@ -66,12 +66,12 @@ class HomeController < ApplicationController
     _schedule = Schedule.find(params[:s_id])
     _schedule.active = _active
     _schedule.save
-    redirect_to "/update/?tutor_id=#{params[:t_id]}&schedule_id=#{params[:s_id]}"
+    redirect_to "/schedule/update/?tutor_id=#{params[:t_id]}&schedule_id=#{params[:s_id]}"
   end
 
   def deleteSchedule
     Schedule.destroy(params[:schedule_id])
-    redirect_to '/update'
+    redirect_to '/schedule/update'
   end
 
   def mock

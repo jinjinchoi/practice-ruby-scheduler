@@ -4,11 +4,12 @@ Rails.application.routes.draw do
   get '/home/index' => 'home#index'
   get 'mockInitialize' => "home#mock"
   get 'initialize' => "home#init"
-  get 'update' => "home#update"
 
   get '/tutor/new' => "tutor#new"
   post '/tutor/create' => "tutor#create"
 
+  get '/schedule/update' => "home#update"
   patch '/schedule' => "home#updateSchedule"
-  get '/delete/:schedule_id' => "home#deleteSchedule"
+  delete 'schedule/:schedule_id/delete' => 'home#deleteSchedule', as: 'schedule_delete'
+  get '/schedule/:schedule_id/delete' => 'home#deleteSchedule'
 end
