@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   get 'initialize' => "home#init"
 
   get '/tutor/new' => "tutor#new"
-  post '/tutor/create' => "tutor#create"
+  post '/tutor' => "tutor#create"
 
   get '/schedule/update' => "home#update"
   get '/schedule/new' => "schedule#new"

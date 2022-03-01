@@ -20,29 +20,93 @@ class HomeController < ApplicationController
       return
     end
 
-    hour_range.each_with_index do |hour, idx_hour|
-      date_range.each_with_index do |day, idx_day|
-        _hour = Time.at(hour).localtime
-        _day = Time.at(day).localtime
-        datetime = DateTime.new(_day.year, _day.month, _day.day, _hour.hour, _hour.min, _hour.sec, '+9')
-        schedule_list = Schedule.where(active: 1, start_date: datetime)
-        unless schedule_list.empty?
-          schedule_list.each do |schedule|
-            case @lecture_type
-            when "20" then
-              @active[idx_hour][idx_day] = true
-            when "40" then
-              @tutor = Tutor.find(schedule.tutor_id)
-              next_time_block = schedule.start_date + 30.minutes
-              if Schedule.find_by(tutor_id: schedule.tutor_id, start_date: next_time_block)
-                @active[idx_hour][idx_day] = true
-              end
-            else
-            end
-          end
-        end
+    # hour_range.each_with_index do |hour, idx_hour|
+    #   date_range.each_with_index do |day, idx_day|
+    #     _hour = Time.at(hour).localtime
+    #     _day = Time.at(day).localtime
+    #     datetime = DateTime.new(_day.year, _day.month, _day.day, _hour.hour, _hour.min, _hour.sec, '+9')
+    #     schedule_list = Schedule.where(active: 1, start_date: datetime)
+    #     unless schedule_list.empty?
+    #       schedule_list.each do |schedule|
+    #         case @lecture_type
+    #         when "20" then
+    #           @active[idx_hour][idx_day] = true
+    #         when "40" then
+    #           @tutor = Tutor.find(schedule.tutor_id)
+    #           next_time_block = schedule.start_date + 30.minutes
+    #           if Schedule.find_by(tutor_id: schedule.tutor_id, start_date: next_time_block)
+    #             @active[idx_hour][idx_day] = true
+    #           end
+    #         else
+    #         end
+    #       end
+    #     end
+    #   end
+    # end
+
+    # 이번 주 동안 active한 스케줄들을 다 불러옴
+    list_of_schedules = Schedule.where(active:1, :start_date => (@start_date.beginning_of_week)..(@start_date.end_of_week)).order(start_date: :asc)
+    # puts(_temp.map{|t| t.start_date})
+    # 스케줄이 yymmdd hhmm이면 -> beginning of week부터 end of week까지를 column index로
+    # 00시부터 23:00까지를 row index로
+    # 20분 권의 경우 active하면 active[row][col] = true로
+    # 40분 권의 경우
+    # 각 schedule의 튜터가 다음 시간대에도 active한지 체크를 해야 함
+    #
+
+    # puts("@start_date.localtime.beginning_of_day.to_datetime #{@start_date.localtime.beginning_of_day.to_datetime}")
+    # puts("@start_date.localtime.end_of_day.to_datetime #{@start_date.localtime.end_of_day.to_datetime}")
+    # puts("@start_date.beginning_of_week.to_datetime #{@start_date.beginning_of_week.to_datetime}")
+    # puts("@start_date.end_of_week.to_datetime #{@start_date.end_of_week.to_datetime}")
+
+    range_by_hour = (@start_date.localtime.beginning_of_day.to_datetime.to_i .. @start_date.localtime.end_of_day.to_datetime.to_i).step(30.minutes)
+    range_by_day = (@start_date.beginning_of_week.to_datetime.to_i .. @start_date.end_of_week.to_datetime.to_i).step(1.day)
+
+
+    calendar_array = Array.new(range_by_hour.size) { Array.new(range_by_day.size) { false } }
+    range_by_hour.each_with_index do |hour, row|
+      range_by_day.each_with_index do |day, column|
+        calendar_array[row][column] = DateTime.new(Time.at(day).year, Time.at(day).month, Time.at(day).day, Time.at(hour).hour, Time.at(hour).min, Time.at(hour).sec, Time.at(hour).zone)
+        # puts("active[#{row}][#{column}] #{DateTime.new(Time.at(day).year, Time.at(day).month, Time.at(day).day, Time.at(hour).hour, Time.at(hour).min, Time.at(hour).sec, Time.at(hour).zone)}")
       end
     end
+
+    # puts(range_by_day.find_index("2022-03-01"))
+    # puts(Time.at(range_by_day.to_a[0]))
+
+    list_of_schedules.map{|t|
+      # puts("yo #{t.start_date}")
+      t.start_date
+    }
+
+    require 'matrix'
+
+
+
+    case @lecture_type
+    when "20" then
+      list_of_schedules.map{ |s|
+        active_index = Matrix[*calendar_array].index(s.start_date)
+        @active[active_index[0]][active_index[1]] = true
+      }
+    when "40" then
+      list_of_schedules.map{ |s|
+        @tutor = Tutor.find(s.tutor_id)
+        next_time_block = s.start_date + 30.minutes
+        if Schedule.find_by(tutor_id: s.tutor_id, start_date: next_time_block)
+          active_index = Matrix[*calendar_array].index(s.start_date)
+          @active[active_index[0]][active_index[1]] = true
+        end
+      }
+    else
+    end
+
+    # active_index = Matrix[*calendar_array].index(list_of_schedules[1].start_date)
+    # @active[active_index[0]][active_index[1]] = true
+    # puts(Matrix[*calendar_array].index(list_of_schedules[1].start_date))
+    # puts(list_of_schedules[1][23])
+    # puts(list_of_schedules[0].start_date)
+
   end
 
   def update

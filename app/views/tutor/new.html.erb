@@ -12,7 +12,7 @@
 <body class="center">
 <br><br><br><br><br><br><br><br><br><br><br><br><br>
 <button type="button"> <%= link_to "홈으로 이동", "/"%></button>
-<%= form_tag "/tutor/create", method: :post do %>
+<%= form_tag "/tutor", method: :post do %>
   <p>이름을 입력해주세요.</p>
   <input required="true" type="text" name="name">
   <br>
