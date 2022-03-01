@@ -16,14 +16,16 @@ class HomeController < ApplicationController
     date_range = (@start_date.beginning_of_week..@start_date.end_of_week).to_a
     hour_range = (@start_date.localtime.beginning_of_day.to_i..@start_date.localtime.end_of_day.to_i).step(30.minutes)
 
-    if @lecture_type == "mock" || @lecture_type == "init"
-      return
-    end
 
     list_of_schedules = Schedule.where(active:1, :start_date => (@start_date.beginning_of_week)..(@start_date.end_of_week)).order(start_date: :asc)
     range_by_hour = (@start_date.localtime.beginning_of_day.to_datetime.to_i .. @start_date.localtime.end_of_day.to_datetime.to_i).step(30.minutes)
     range_by_day = (@start_date.beginning_of_week.to_datetime.to_i .. @start_date.end_of_week.to_datetime.to_i).step(1.day)
     @active = Array.new(hour_range.size) { Array.new(date_range.size) { false } }
+
+    if @lecture_type == "mock" || @lecture_type == "init"
+      return
+    end
+
 
     calendar_array = Array.new(range_by_hour.size) { Array.new(range_by_day.size) { false } }
     range_by_hour.each_with_index do |hour, row|
