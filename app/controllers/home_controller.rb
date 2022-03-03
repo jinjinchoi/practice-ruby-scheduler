@@ -18,6 +18,20 @@ class HomeController < ApplicationController
 
 
     list_of_schedules = Schedule.where(active:1, :start_date => (@start_date.beginning_of_week)..(@start_date.end_of_week)).order(start_date: :asc)
+
+    query = <<-SQL
+      WITH t AS (
+        SELECT *, start_date, LEAD(start_date, 1) OVER (PARTITION BY tutor_id ORDER BY start_date ASC) AS next_available_date
+        FROM schedules 
+        WHERE active = 1
+      )     
+
+      SELECT *
+      FROM t
+      WHERE DATETIME(next_available_date, '-30 MINUTE') = t.start_date
+    SQL
+    list_of_schedules_40 = list_of_schedules.select('*').from("(#{query} )AS schedules")
+
     range_by_hour = (@start_date.localtime.beginning_of_day.to_datetime.to_i .. @start_date.localtime.end_of_day.to_datetime.to_i).step(30.minutes)
     range_by_day = (@start_date.beginning_of_week.to_datetime.to_i .. @start_date.end_of_week.to_datetime.to_i).step(1.day)
     @active = Array.new(hour_range.size) { Array.new(date_range.size) { false } }
@@ -25,7 +39,6 @@ class HomeController < ApplicationController
     if @lecture_type == "mock" || @lecture_type == "init"
       return
     end
-
 
     calendar_array = Array.new(range_by_hour.size) { Array.new(range_by_day.size) { false } }
     range_by_hour.each_with_index do |hour, row|
@@ -41,12 +54,9 @@ class HomeController < ApplicationController
         @active[active_index[0]][active_index[1]] = true
       }
     when "40" then
-      list_of_schedules.map{ |s|
-        next_time_block = s.start_date + 30.minutes
-        if list_of_schedules.find_by(tutor_id: s.tutor_id, start_date: next_time_block)
-          active_index = Matrix[*calendar_array].index(s.start_date)
-          @active[active_index[0]][active_index[1]] = true
-        end
+      list_of_schedules_40.map{ |s|
+        active_index = Matrix[*calendar_array].index(s.start_date)
+        @active[active_index[0]][active_index[1]] = true
       }
     else
     end
